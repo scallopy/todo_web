@@ -10,6 +10,10 @@
 
 `source env/bin/activate`
 
+## Install requirements:
+
+`(env) ...$ python3.8 -m pip install -U -r requirements.txt`
+
 ## run server
 
 `python server.py`
