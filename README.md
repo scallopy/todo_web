@@ -30,4 +30,4 @@ Python 3.8.4
 
 ## run server
 
-`python server.py`
+`python main.py`
