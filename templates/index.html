@@ -20,8 +20,20 @@
         <p>{{ line[0] }}
         {{c}}
         <button><a href="/done/{{ line[1] }}">Done</a></button>
-        <button><a href="/edit/{{ line[1] }}">Update</a></button>
-        <button><a href="/delete/{{ line[1] }}">Delete</a></button>
+        <button>
+          <a href="/edit/{{ line[1] }}"
+            onclick=" return confirm('Are you sure ?')"
+            >
+            Update
+          </a>
+        </button>
+        <button>
+          <a href="/delete/{{ line[1] }}"
+            onclick=" return confirm('Are you sure')"
+            >
+            Delete
+          </a>
+        </button>
         </p>
         {% endfor %}
 
