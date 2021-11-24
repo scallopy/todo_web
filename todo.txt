@@ -1,4 +1,6 @@
+Add first todo
+Add second todo
+Updated third todo
 Add fourth todo
-Add fifth todo
-Add sixth
-Add seventh todo
+Updated fifth todo
+Updated sixth todo

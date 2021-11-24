@@ -58,6 +58,44 @@ def add():
     return redirect(url_for("home"))
 
 
+@app.route("/edit/<int:no>")
+def edit(no):
+    no = int(no)
+    nec()
+    with open("todo.txt", "r") as f:
+        lines = f.readlines()
+
+        for line in lines:
+            if line == d[no]:
+                print(line)
+                new_line = line
+        print(new_line)
+    return render_template("update.html", line=new_line, no=no)
+
+
+@app.route("/update/<int:no>", methods=["POST"])
+def update(no):
+    no = int(no)
+    nec()
+
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
+
+        for i in lines:
+            if i != d[no]:
+                f.write(i)
+            else:
+                new_i = request.form.get("title")
+                f.write(new_i)
+                f.write("\n")
+                s = '"'+new_i+'"'
+                print("Updated todo: {} {} to {}".format(no, i, s))
+        f.truncate()
+
+    return redirect(url_for("home"))
+
+
 @app.route("/delete/<int:no>", methods=["GET"])
 def delete(no):
     try:

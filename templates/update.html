@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Python is awesome!</title>
+    </head>
+    <body>
+        <p>Hello!</p>
+        <h3><a href="/"> Todo list</a></h3>
+        <h1>Update todo:</h1>
+        <form action="/update/{{ no }}" method="post">
+          <div>
+            <label>Update todo:</label>
+            <input type="text" name="title" placeholder="{{ line }}" autofocus>
+              <br>
+              <button type="submit">Update</button>
+          </div>
+        </form>
+    </body>
+</html>
