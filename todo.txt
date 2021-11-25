@@ -1,5 +1,4 @@
-Add first todo
-Add second todo
 Updated third todo
 Add fourth todo
 Updated fifth todo
+Add new todo

@@ -31,3 +31,31 @@ Python 3.8.4
 ## run server
 
 `python main.py`
+
+# todo_cli
+
+## Give permition to the todo.sh
+
+$ chmod +x todo.sh
+
+## Working with todo CLI app:
+
+$ ./todo help
+
+## If you haven't linked todo.sh:
+
+$ ln -s todo.sh todo
+
+# for windows:
+**todo.bat** file:
+
+```
+
+@echo off
+python3 todo.py %1 %2
+```
+
+**Create a symbolic link to the executable file:**
+
+`mklink todo todo.bat`
+
