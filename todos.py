@@ -12,7 +12,7 @@ def help():
         $ ./todo help            # Show usage
         $ ./todo report          # Statistics
         """
-    sys.stdout.write(sa.encode('utf8'))
+    sys.stdout.write(sa)
 
 
 # function to add item in todo list
@@ -43,27 +43,29 @@ def ls():
 
 
 # Function to complete a todo
+def done_todo(no):
+    nec()
+    no = int(no)
+    f = open('done.txt', 'a')
+    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + d[no]
+
+    f.write(st)
+    f.close()
+    print("Market todo #{} as done.".format(no))
+
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
+
+        for i in lines:
+            if i != d[no]:
+                f.write(i)
+        f.truncate()
+
+
 def done(no):
     try:
-
-        nec()
-        no = int(no)
-        f = open('done.txt', 'a')
-        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + d[no]
-
-        f.write(st)
-        f.write("\n")
-        f.close()
-        print("Market todo #{} as done.".format(no))
-
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != d[no]:
-                    f.write(i)
-            f.truncate()
+        done_todo(no)
 
     except Exception:
         print("Error: todo #{} does not exist.".format(no))
@@ -124,11 +126,13 @@ def nec():
     # Utility function uset in done and report function
     try:
         f = open('todo.txt', 'r')
-        c = 1
+        c = 0
+        d.clear()
         for line in f:
             line.strip('\n')
-            d.update({c: line})
             c = c + 1
+            d[c] = line
+        f.close()
 
     except Exception:
         sys.stdout.write("There are no pending todos!")
@@ -147,10 +151,9 @@ if __name__ == '__main__':
         if (args[1] == 'add' and len(args[2:]) == 0):
             sys.stdout.write("Error: Missing todo string. Nothing added!")
         elif (args[1] == 'done' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing NUMBER for deleting todo.")
+            sys.stdout.write("Error: Missing NUMBER for done todo.")
         elif (args[1] == 'deL' and len(args[2:]) == 0):
-            sys.stdout.write(
-                "Error: Missing NUMBER for deleting todo.")
+            sys.stdout.write("Error: Missing NUMBER for deleting todo.")
         else:
             globals()[args[1]](*args[2:])
 

@@ -2,7 +2,16 @@ import sys
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
+from todos import add
+
 app = Flask(__name__)
+
+
+@app.route("/add", methods=["POST"])
+def add_todo():
+    s = request.form.get("title")
+    add(s)
+    return redirect(url_for("home"))
 
 
 @app.route('/', methods=["GET"])
@@ -17,9 +26,9 @@ def home():
     return render_template('index.html', content=content)
 
 
+# Function to complete a todo
 @app.route("/done/<int:no>", methods=["GET", "POST"])
 def done(no):
-
     try:
 
         nec()
@@ -44,18 +53,6 @@ def done(no):
     except Exception:
         print("Error: todo")
         return redirect(url_for("report"))
-
-
-@app.route("/add", methods=["POST"])
-def add():
-    s = request.form.get("title")
-    f = open('todo.txt', 'a')
-    f.write(s)
-    f.write("\n")
-    f.close()
-    s = '"'+s+'"'
-    print("Added todo: {}".format(s))
-    return redirect(url_for("home"))
 
 
 @app.route("/edit/<int:no>")
