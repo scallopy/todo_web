@@ -122,29 +122,24 @@ def read_todos_from_db():
 
 # Main program
 if __name__ == '__main__':
-    # try:
-        don = {}
-        args = sys.argv
+    args = sys.argv
 
-        if (args[1] == 'del'):
-            args[1] = 'deL'
+    if len(args) <= 1:
+        help()
+    else:
+        try:
+            don = {}
 
-        if (args[1] == 'add' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing todo string. Nothing added!")
-        elif (args[1] == 'done' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing NUMBER for done todo.")
-        elif (args[1] == 'deL' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing NUMBER for deleting todo.")
-        else:
-            globals()[args[1]](*args[2:])
+            if (args[1] == 'del'):
+                args[1] = 'deL'
 
-    # except Exception:
-    #     # TODO: Reuse the 'help' function.
-    #     s = """Usage : -
-    #     $ ./todo add "todo item"  # Add a new todo
-    #     $ ./todo ls               # Show remaining todos
-    #     $ ./todo del NUMBER       # Delete a todo
-    #     $ ./todo done NUMBER      # Complete a todo
-    #     $ ./todo help             # Show usage
-    #     $ ./todo report           # Statistics"""
-    #     sys.stdout.write(s)
+            if (args[1] == 'add' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing todo string. Nothing added!")
+            elif (args[1] == 'done' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing NUMBER for done todo.")
+            elif (args[1] == 'deL' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing NUMBER for deleting todo.")
+            else:
+                globals()[args[1]](*args[2:])
+        except KeyError:
+            help()
