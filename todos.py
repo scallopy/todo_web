@@ -14,14 +14,11 @@ def help():
     print(help_message)
 
 
-# function to add item in todo list
-def add(s):
-    f = open('todo.txt', 'a')
-    f.write(s)
-    f.write("\n")
-    f.close()
-    s = '"'+s+'"'
-    print("Added todo: {}".format(s))
+def add(todo_item):
+    with open('todo.txt', 'a') as f:
+        f.write(todo_item)
+        f.write("\n")
+    print("Added todo: \"{}\"".format(todo_item))
 
 
 # Function to print the todo list items
