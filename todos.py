@@ -23,16 +23,13 @@ def add(todo_item):
 
 # Function to print the todo list items
 def ls():
-
     try:
-
         todos = read_todos_from_db()
-        k = len(todos)
+        idx = len(todos)
 
-        for i in todos:
-            sys.stdout.write("[{}] {}".format(k, todos[k]))
-            sys.stdout.write("\n")
-            k = k - 1
+        for todo in reversed(todos):
+            print("[{}] {}".format(idx, todo))
+            idx -= 1
 
     except Exception as e:
         raise e
@@ -41,7 +38,7 @@ def ls():
 # Function to complete a todo
 def done_todo(no):
     todos = read_todos_from_db()
-    no = int(no)
+    no = int(no) - 1
     f = open('done.txt', 'a')
     st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
@@ -97,7 +94,7 @@ def report():
 # delete
 def deL(no):
     try:
-        no = int(no)
+        no = int(no) - 1
         todos = read_todos_from_db()
 
         # utility function defined in main
@@ -109,7 +106,7 @@ def deL(no):
                 if i != todos[no]:
                     f.write(i)
             f.truncate()
-        print("Deleted todo #{}".format(no))
+        print("Deleted todo #{}".format(no + 1))
 
     except Exception:
 
@@ -117,14 +114,12 @@ def deL(no):
 
 
 def read_todos_from_db():
-    todos = {}
+    todos = []
     try:
         with open('todo.txt', 'r') as f:
-            c = 0
             for line in f:
                 line.strip('\n')
-                c = c + 1
-                todos[c] = line
+                todos.append(line)
         return todos
     except Exception:
         print("There are no pending todos!")
@@ -132,7 +127,7 @@ def read_todos_from_db():
 
 # Main program
 if __name__ == '__main__':
-    try:
+    # try:
         don = {}
         args = sys.argv
 
@@ -148,13 +143,13 @@ if __name__ == '__main__':
         else:
             globals()[args[1]](*args[2:])
 
-    except Exception:
-        # TODO: Reuse the 'help' function.
-        s = """Usage : -
-        $ ./todo add "todo item"  # Add a new todo
-        $ ./todo ls               # Show remaining todos
-        $ ./todo del NUMBER       # Delete a todo
-        $ ./todo done NUMBER      # Complete a todo
-        $ ./todo help             # Show usage
-        $ ./todo report           # Statistics"""
-        sys.stdout.write(s)
+    # except Exception:
+    #     # TODO: Reuse the 'help' function.
+    #     s = """Usage : -
+    #     $ ./todo add "todo item"  # Add a new todo
+    #     $ ./todo ls               # Show remaining todos
+    #     $ ./todo del NUMBER       # Delete a todo
+    #     $ ./todo done NUMBER      # Complete a todo
+    #     $ ./todo help             # Show usage
+    #     $ ./todo report           # Statistics"""
+    #     sys.stdout.write(s)
