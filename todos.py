@@ -26,11 +26,11 @@ def ls():
 
     try:
 
-        nec()
-        k = len(d)
+        todos = read_todos_from_db()
+        k = len(todos)
 
-        for i in d:
-            sys.stdout.write("[{}] {}".format(k, d[k]))
+        for i in todos:
+            sys.stdout.write("[{}] {}".format(k, todos[k]))
             sys.stdout.write("\n")
             k = k - 1
 
@@ -40,10 +40,10 @@ def ls():
 
 # Function to complete a todo
 def done_todo(no):
-    nec()
+    todos = read_todos_from_db()
     no = int(no)
     f = open('done.txt', 'a')
-    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + d[no]
+    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
     f.write(st)
     f.close()
@@ -54,7 +54,7 @@ def done_todo(no):
         f.seek(0)
 
         for i in lines:
-            if i != d[no]:
+            if i != todos[no]:
                 f.write(i)
         f.truncate()
 
@@ -69,7 +69,7 @@ def done(no):
 
 # Function to show report/statistics of todo list
 def report():
-    nec()
+    todos = read_todos_from_db()
     try:
 
         nf = open('done.txt', 'r')
@@ -83,14 +83,14 @@ def report():
         print(
             '{} Pending : {} Compleated : {}'
             .format(str(datetime.datetime.today()).split()[0],
-                    len(d), len(don))
+                    len(todos), len(don))
         )
 
     except Exception:
         print(
             '{} Pending : {} Compleated : {}'
             .format(str(datetime.datetime.today()).split()[0],
-                    len(d), len(don))
+                    len(todos), len(don))
         )
 
 
@@ -98,7 +98,7 @@ def report():
 def deL(no):
     try:
         no = int(no)
-        nec()
+        todos = read_todos_from_db()
 
         # utility function defined in main
         with open("todo.txt", "r+") as f:
@@ -106,7 +106,7 @@ def deL(no):
             f.seek(0)
 
             for i in lines:
-                if i != d[no]:
+                if i != todos[no]:
                     f.write(i)
             f.truncate()
         print("Deleted todo #{}".format(no))
@@ -116,27 +116,23 @@ def deL(no):
         print("Error: todo #{} does not exist. Nothing deleted.".format(no))
 
 
-# nec reads the todo DB and fills in the global variable 'd' with all the todo
-# items.
-def nec():
+def read_todos_from_db():
+    todos = {}
     try:
-        f = open('todo.txt', 'r')
-        c = 0
-        d.clear()
-        for line in f:
-            line.strip('\n')
-            c = c + 1
-            d[c] = line
-        f.close()
-
+        with open('todo.txt', 'r') as f:
+            c = 0
+            for line in f:
+                line.strip('\n')
+                c = c + 1
+                todos[c] = line
+        return todos
     except Exception:
-        sys.stdout.write("There are no pending todos!")
+        print("There are no pending todos!")
 
 
 # Main program
 if __name__ == '__main__':
     try:
-        d = {}
         don = {}
         args = sys.argv
 
