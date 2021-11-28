@@ -116,10 +116,9 @@ def deL(no):
         print("Error: todo #{} does not exist. Nothing deleted.".format(no))
 
 
-# Main function and utility function
+# nec reads the todo DB and fills in the global variable 'd' with all the todo
+# items.
 def nec():
-
-    # Utility function uset in done and report function
     try:
         f = open('todo.txt', 'r')
         c = 0
@@ -154,7 +153,7 @@ if __name__ == '__main__':
             globals()[args[1]](*args[2:])
 
     except Exception:
-
+        # TODO: Reuse the 'help' function.
         s = """Usage : -
         $ ./todo add "todo item"  # Add a new todo
         $ ./todo ls               # Show remaining todos
