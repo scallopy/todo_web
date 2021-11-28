@@ -2,9 +2,8 @@ import sys
 import datetime
 
 
-# help function
 def help():
-    sa = """Usage : -
+    help_message = """Usage : -
         $ ./todo add "todo item" # Add a new todo
         $ ./todo ls              # Show remaining todos
         $ ./todo del NUMBER      # Delete a todo
@@ -12,7 +11,7 @@ def help():
         $ ./todo help            # Show usage
         $ ./todo report          # Statistics
         """
-    sys.stdout.write(sa)
+    print(help_message)
 
 
 # function to add item in todo list
