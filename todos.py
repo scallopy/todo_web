@@ -21,18 +21,13 @@ def add(todo_item):
     print("Added todo: \"{}\"".format(todo_item))
 
 
-# Function to print the todo list items
 def ls():
-    try:
-        todos = read_todos_from_db()
-        idx = len(todos)
+    todos = read_todos_from_db()
+    idx = len(todos)
 
-        for todo in reversed(todos):
-            print("[{}] {}".format(idx, todo))
-            idx -= 1
-
-    except Exception as e:
-        raise e
+    for todo in reversed(todos):
+        print("[{}] {}".format(idx, todo))
+        idx -= 1
 
 
 # Function to complete a todo
