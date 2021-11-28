@@ -7,6 +7,17 @@ from todos import add
 app = Flask(__name__)
 
 
+# TODO: Refactor both the web version and the cli version to reuse a common
+# set of methods.
+#
+#              DAO
+#       (Data Access Object)
+#               |
+#         +-----+------+
+#         |     |      |
+#      WebUI   GUI    CLI
+#
+
 @app.route("/add", methods=["POST"])
 def add_todo():
     s = request.form.get("title")

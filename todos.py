@@ -30,6 +30,7 @@ def ls():
         idx -= 1
 
 
+# TODO: Refactor
 # Function to complete a todo
 def done_todo(no):
     todos = read_todos_from_db()
@@ -51,6 +52,7 @@ def done_todo(no):
         f.truncate()
 
 
+# TODO: Remove - no need two functions that do the same thing
 def done(no):
     try:
         done_todo(no)
@@ -59,6 +61,7 @@ def done(no):
         print("Error: todo #{} does not exist.".format(no))
 
 
+# TODO: Refactor
 # Function to show report/statistics of todo list
 def report():
     todos = read_todos_from_db()
@@ -86,6 +89,7 @@ def report():
         )
 
 
+# TODO: Refactor
 # delete
 def deL(no):
     try:
@@ -128,6 +132,7 @@ if __name__ == '__main__':
         help()
     else:
         try:
+            # TODO: Remove global variable
             don = {}
 
             if (args[1] == 'del'):
