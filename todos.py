@@ -2,9 +2,8 @@ import sys
 import datetime
 
 
-# help function
 def help():
-    sa = """Usage : -
+    help_message = """Usage : -
         $ ./todo add "todo item" # Add a new todo
         $ ./todo ls              # Show remaining todos
         $ ./todo del NUMBER      # Delete a todo
@@ -12,42 +11,32 @@ def help():
         $ ./todo help            # Show usage
         $ ./todo report          # Statistics
         """
-    sys.stdout.write(sa)
+    print(help_message)
 
 
-# function to add item in todo list
-def add(s):
-    f = open('todo.txt', 'a')
-    f.write(s)
-    f.write("\n")
-    f.close()
-    s = '"'+s+'"'
-    print("Added todo: {}".format(s))
+def add(todo_item):
+    with open('todo.txt', 'a') as f:
+        f.write(todo_item)
+        f.write("\n")
+    print("Added todo: \"{}\"".format(todo_item))
 
 
-# Function to print the todo list items
 def ls():
+    todos = read_todos_from_db()
+    idx = len(todos)
 
-    try:
-
-        nec()
-        k = len(d)
-
-        for i in d:
-            sys.stdout.write("[{}] {}".format(k, d[k]))
-            sys.stdout.write("\n")
-            k = k - 1
-
-    except Exception as e:
-        raise e
+    for todo in reversed(todos):
+        print("[{}] {}".format(idx, todo))
+        idx -= 1
 
 
+# TODO: Refactor
 # Function to complete a todo
 def done_todo(no):
-    nec()
-    no = int(no)
+    todos = read_todos_from_db()
+    no = int(no) - 1
     f = open('done.txt', 'a')
-    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + d[no]
+    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
     f.write(st)
     f.close()
@@ -58,11 +47,12 @@ def done_todo(no):
         f.seek(0)
 
         for i in lines:
-            if i != d[no]:
+            if i != todos[no]:
                 f.write(i)
         f.truncate()
 
 
+# TODO: Remove - no need two functions that do the same thing
 def done(no):
     try:
         done_todo(no)
@@ -71,9 +61,10 @@ def done(no):
         print("Error: todo #{} does not exist.".format(no))
 
 
+# TODO: Refactor
 # Function to show report/statistics of todo list
 def report():
-    nec()
+    todos = read_todos_from_db()
     try:
 
         nf = open('done.txt', 'r')
@@ -87,22 +78,23 @@ def report():
         print(
             '{} Pending : {} Compleated : {}'
             .format(str(datetime.datetime.today()).split()[0],
-                    len(d), len(don))
+                    len(todos), len(don))
         )
 
     except Exception:
         print(
             '{} Pending : {} Compleated : {}'
             .format(str(datetime.datetime.today()).split()[0],
-                    len(d), len(don))
+                    len(todos), len(don))
         )
 
 
+# TODO: Refactor
 # delete
 def deL(no):
     try:
-        no = int(no)
-        nec()
+        no = int(no) - 1
+        todos = read_todos_from_db()
 
         # utility function defined in main
         with open("todo.txt", "r+") as f:
@@ -110,60 +102,49 @@ def deL(no):
             f.seek(0)
 
             for i in lines:
-                if i != d[no]:
+                if i != todos[no]:
                     f.write(i)
             f.truncate()
-        print("Deleted todo #{}".format(no))
+        print("Deleted todo #{}".format(no + 1))
 
     except Exception:
 
         print("Error: todo #{} does not exist. Nothing deleted.".format(no))
 
 
-# Main function and utility function
-def nec():
-
-    # Utility function uset in done and report function
+def read_todos_from_db():
+    todos = []
     try:
-        f = open('todo.txt', 'r')
-        c = 0
-        d.clear()
-        for line in f:
-            line.strip('\n')
-            c = c + 1
-            d[c] = line
-        f.close()
-
+        with open('todo.txt', 'r') as f:
+            for line in f:
+                line.strip('\n')
+                todos.append(line)
+        return todos
     except Exception:
-        sys.stdout.write("There are no pending todos!")
+        print("There are no pending todos!")
 
 
 # Main program
 if __name__ == '__main__':
-    try:
-        d = {}
-        don = {}
-        args = sys.argv
+    args = sys.argv
 
-        if (args[1] == 'del'):
-            args[1] = 'deL'
+    if len(args) <= 1:
+        help()
+    else:
+        try:
+            # TODO: Remove global variable
+            don = {}
 
-        if (args[1] == 'add' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing todo string. Nothing added!")
-        elif (args[1] == 'done' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing NUMBER for done todo.")
-        elif (args[1] == 'deL' and len(args[2:]) == 0):
-            sys.stdout.write("Error: Missing NUMBER for deleting todo.")
-        else:
-            globals()[args[1]](*args[2:])
+            if (args[1] == 'del'):
+                args[1] = 'deL'
 
-    except Exception:
-
-        s = """Usage : -
-        $ ./todo add "todo item"  # Add a new todo
-        $ ./todo ls               # Show remaining todos
-        $ ./todo del NUMBER       # Delete a todo
-        $ ./todo done NUMBER      # Complete a todo
-        $ ./todo help             # Show usage
-        $ ./todo report           # Statistics"""
-        sys.stdout.write(s)
+            if (args[1] == 'add' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing todo string. Nothing added!")
+            elif (args[1] == 'done' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing NUMBER for done todo.")
+            elif (args[1] == 'deL' and len(args[2:]) == 0):
+                sys.stdout.write("Error: Missing NUMBER for deleting todo.")
+            else:
+                globals()[args[1]](*args[2:])
+        except KeyError:
+            help()
