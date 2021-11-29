@@ -1,36 +1,28 @@
 # todo_web
 
-## Python3.8
+## Getting Started
 
-```
-$ $ python --version
-Python 3.7.3
-$ which python3.8
-/usr/local/bin/python3.8
-$ alias python="/usr/local/bin/python3.8"
-$ python --version
-Python 3.8.4
-```
+1. Install Python3.8
 
-## Clone repo:
+    ```
+    $ python --version
+    Python 3.7.3
+    $ which python3.8
+    /usr/local/bin/python3.8
+    $ alias python="/usr/local/bin/python3.8"
+    $ python --version
+    Python 3.8.4
+    ```
 
-`$ git@github.com:scallopy/todo_web.git`
+2. Clone the repo: `$ git@github.com:scallopy/todo_web.git`
 
-## Create virtualenv:
+3. Create virtualenv: `$ virtualenv -p python3.8 env`
 
-`$ virtualenv -p python3.8 env`
+4. Activate virtualenv: `source env/bin/activate`
 
-## Activate virtualenv:
+5. Install the requirements: `(env) ...$ python3.8 -m pip install -U -r requirements.txt`
 
-`source env/bin/activate`
-
-## Install requirements:
-
-`(env) ...$ python3.8 -m pip install -U -r requirements.txt`
-
-## run server
-
-`python main.py`
+6. Run the server: `python main.py`
 
 # todo_cli
 
@@ -46,11 +38,11 @@ $ ./todo help
 
 $ ln -s todo.sh todo
 
-# for windows:
+## for windows:
+
 **todo.bat** file:
 
 ```
-
 @echo off
 python3 todo.py %1 %2
 ```
@@ -58,4 +50,3 @@ python3 todo.py %1 %2
 **Create a symbolic link to the executable file:**
 
 `mklink todo todo.bat`
-
