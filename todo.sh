@@ -1,1 +1,1 @@
-python todos.py "$@"
+python todo_cli.py "$@"

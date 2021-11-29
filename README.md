@@ -22,7 +22,7 @@
 
 5. Install the requirements: `(env) ...$ python3.8 -m pip install -U -r requirements.txt`
 
-6. Run the server: `python main.py`
+6. Run the server: `python todo_web.py`
 
 # todo_cli
 
