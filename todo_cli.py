@@ -1,5 +1,6 @@
 import sys
 import datetime
+from main import read_todos_from_db
 
 
 def help():
@@ -34,6 +35,7 @@ def complete_todo(no):
     try:
         todos = read_todos_from_db()
         no = int(no) - 1
+        print(no)
         f = open('done.txt', 'a')
         st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
@@ -70,6 +72,28 @@ def report_completed_todo():
         )
 
 
+def update(no, new_item):
+    try:
+        todos = read_todos_from_db()
+        no = int(no) - 1
+
+        with open("todo.txt", "r+") as f:
+            lines = f.readlines()
+            f.seek(0)
+
+            for i in lines:
+                if i != todos[no]:
+                    f.write(i)
+                else:
+                    f.write(new_item)
+                    f.write("\n")
+                    s = '"'+new_item+'"'
+                    print("Updated todo: {} {} to {}".format((no+1), i, s))
+            f.truncate()
+    except Exception:
+        print("Error: todo #{} does not exist. Nothing updated.".format(no+1))
+
+
 def delete_todo(no):
     try:
         no = int(no) - 1
@@ -87,18 +111,6 @@ def delete_todo(no):
         print("Deleted todo #{}".format(no + 1))
     except Exception:
         print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
-
-
-def read_todos_from_db():
-    todos = []
-    try:
-        with open('todo.txt', 'r') as f:
-            for line in f:
-                line.strip('\n')
-                todos.append(line)
-        return todos
-    except Exception:
-        print("There are no pending todos!")
 
 
 # Main program

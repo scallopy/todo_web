@@ -1,114 +1,66 @@
-import sys
-from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
-from todos import add
 
-app = Flask(__name__)
-
-
-# TODO: Refactor both the web version and the cli version to reuse a common
-# set of methods.
-#
-#              DAO
-#       (Data Access Object)
-#               |
-#         +-----+------+
-#         |     |      |
-#      WebUI   GUI    CLI
-#
-
-@app.route("/add", methods=["POST"])
-def add_todo():
-    s = request.form.get("title")
-    add(s)
-    return redirect(url_for("home"))
+def add(todo_item):
+    with open('todo.txt', 'a') as f:
+        f.write(todo_item)
+        f.write("\n")
+    print("Added todo: \"{}\"".format(todo_item))
 
 
-@app.route('/', methods=["GET"])
-def home():
-    nec()
-    k = len(d)
-    content = []
-    for i in d:
-        cont = [("[{}] {}\n".format(k, d[k])), k]
-        k = k-1
-        content.append(cont)
-    return render_template('index.html', content=content)
+def ls():
+    todos = read_todos_from_db()
+    idx = len(todos)
+
+    for todo in reversed(todos):
+        print("[{}] {}".format(idx, todo))
+        idx -= 1
 
 
-# Function to complete a todo
-@app.route("/done/<int:no>", methods=["GET", "POST"])
-def done(no):
+def complete_todo(no):
     try:
-
-        nec()
-        no = int(no)
+        todos = read_todos_from_db()
+        no = int(no) - 1
         f = open('done.txt', 'a')
-        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + d[no]
+        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
         f.write(st)
         f.close()
-        print("Market todo #{} as done.".format(no))
+        print("Market todo #{} as done.".format(no+1))
 
         with open("todo.txt", "r+") as f:
             lines = f.readlines()
             f.seek(0)
 
             for i in lines:
-                if i != d[no]:
+                if i != todos[no]:
                     f.write(i)
             f.truncate()
-            return redirect(url_for("report"))
-
     except Exception:
-        print("Error: todo")
-        return redirect(url_for("report"))
+        print("Error: todo #{} does not exist. Nothing comleted.".format(no+1))
 
 
-@app.route("/edit/<int:no>")
-def edit(no):
-    no = int(no)
-    nec()
-    with open("todo.txt", "r") as f:
-        lines = f.readlines()
+def report_completed_todo():
+    todos = read_todos_from_db()
+    don = {}
+    with open('done.txt', 'r') as nf:
+        c = 1
+        for line in nf:
+            line = line.strip('\n')
+            don.update({c: line})
+            c = c + 1
 
-        for line in lines:
-            if line == d[no]:
-                print(line)
-                new_line = line
-        print(new_line)
-    return render_template("update.html", line=new_line, no=no)
-
-
-@app.route("/update/<int:no>", methods=["POST"])
-def update(no):
-    no = int(no)
-    nec()
-
-    with open("todo.txt", "r+") as f:
-        lines = f.readlines()
-        f.seek(0)
-
-        for i in lines:
-            if i != d[no]:
-                f.write(i)
-            else:
-                new_i = request.form.get("title")
-                f.write(new_i)
-                f.write("\n")
-                s = '"'+new_i+'"'
-                print("Updated todo: {} {} to {}".format(no, i, s))
-        f.truncate()
-
-    return redirect(url_for("home"))
+        print(
+            '{} Pending : {} Compleated : {}'
+            .format(str(datetime.datetime.today()).split()[0],
+                    len(todos), len(don))
+        )
 
 
-@app.route("/delete/<int:no>", methods=["GET"])
-def delete(no):
+def delete_todo(no):
     try:
-        no = int(no)
-        nec()
+        no = int(no) - 1
+        todos = read_todos_from_db()
 
         # utility function defined in main
         with open("todo.txt", "r+") as f:
@@ -116,75 +68,21 @@ def delete(no):
             f.seek(0)
 
             for i in lines:
-                if i != d[no]:
+                if i != todos[no]:
                     f.write(i)
             f.truncate()
-            print("Deleted todo #{}".format(no))
-
+        print("Deleted todo #{}".format(no + 1))
     except Exception:
-
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no))
-    return redirect(url_for("home"))
+        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
 
 
-# Function to show report/statistics of todo list
-@app.route('/report', methods=["GET"])
-def report():
-    nec()
+def read_todos_from_db():
+    todos = []
     try:
-
-        nf = open('done.txt', 'r')
-        c = 0
-        content = []
-        completed = []
-        for line in nf:
-            c = c + 1
-            don.update({c: line})
-        cont = (
-            '{} Pending : {} Completed : {}'
-            .format(
-                str(datetime.datetime.today()).split()[0], len(d), len(don))
-        )
-        content.append(cont)
-        for value in don.values():
-            completed.append(value)
-        return render_template(
-            'report.html', content=content, completed=completed)
-
+        with open('todo.txt', 'r') as f:
+            for line in f:
+                line.strip('\n')
+                todos.append(line)
+        return todos
     except Exception:
-        print(
-            '{} Pending : {} Compleated : {}'
-            .format(
-                str(datetime.datetime.today()).split()[0], len(d), len(don))
-        )
-        return render_template(
-            'report.html', content=content, completed=completed)
-
-
-def nec():
-
-    try:
-        f = open("todo.txt", "r")
-        lines = f.readlines()
-        c = 0
-        d.clear()
-        for line in lines:
-            line.strip('\n')
-            c += 1
-            d[c] = line
-        f.close()
-
-    except Exception:
-        print("There are not todos!")
-
-
-def main(argv):
-    reloader = True
-    print('Starting with reloader={}'.format(reloader))
-    app.run(port=8080, debug=True, use_reloader=reloader)
-
-
-if __name__ == "__main__":
-    d = {}
-    don = {}
-    main(sys.argv)
+        print("There are no pending todos!")
