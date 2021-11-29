@@ -1,7 +1,7 @@
 import datetime
 
 
-def add(todo_item):
+def addTodo(todo_item):
     with open('todo.txt', 'a') as f:
         f.write(todo_item)
         f.write("\n")

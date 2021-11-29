@@ -1,6 +1,6 @@
 import sys
 import datetime
-from main import read_todos_from_db
+from main import read_todos_from_db, addTodo
 
 
 def help():
@@ -16,10 +16,7 @@ def help():
 
 
 def add(todo_item):
-    with open('todo.txt', 'a') as f:
-        f.write(todo_item)
-        f.write("\n")
-    print("Added todo: \"{}\"".format(todo_item))
+    addTodo(todo_item)
 
 
 def ls():

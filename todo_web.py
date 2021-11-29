@@ -2,7 +2,7 @@ import sys
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
-from main import read_todos_from_db, add
+from main import read_todos_from_db, addTodo
 
 app = Flask(__name__)
 
@@ -21,7 +21,7 @@ app = Flask(__name__)
 @app.route("/add", methods=["POST"])
 def add_todo():
     s = request.form.get("title")
-    add(s)
+    addTodo(s)
     return redirect(url_for("home"))
 
 
