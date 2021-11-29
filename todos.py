@@ -30,46 +30,34 @@ def ls():
         idx -= 1
 
 
-# TODO: Refactor
-# Function to complete a todo
-def done_todo(no):
-    todos = read_todos_from_db()
-    no = int(no) - 1
-    f = open('done.txt', 'a')
-    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
-
-    f.write(st)
-    f.close()
-    print("Market todo #{} as done.".format(no))
-
-    with open("todo.txt", "r+") as f:
-        lines = f.readlines()
-        f.seek(0)
-
-        for i in lines:
-            if i != todos[no]:
-                f.write(i)
-        f.truncate()
-
-
-# TODO: Remove - no need two functions that do the same thing
-def done(no):
+def complete_todo(no):
     try:
-        done_todo(no)
+        todos = read_todos_from_db()
+        no = int(no) - 1
+        f = open('done.txt', 'a')
+        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
+        f.write(st)
+        f.close()
+        print("Market todo #{} as done.".format(no+1))
+
+        with open("todo.txt", "r+") as f:
+            lines = f.readlines()
+            f.seek(0)
+
+            for i in lines:
+                if i != todos[no]:
+                    f.write(i)
+            f.truncate()
     except Exception:
-        print("Error: todo #{} does not exist.".format(no))
+        print("Error: todo #{} does not exist. Nothing comleted.".format(no+1))
 
 
-# TODO: Refactor
-# Function to show report/statistics of todo list
-def report():
+def report_completed_todo():
     todos = read_todos_from_db()
-    try:
-
-        nf = open('done.txt', 'r')
+    don = {}
+    with open('done.txt', 'r') as nf:
         c = 1
-
         for line in nf:
             line = line.strip('\n')
             don.update({c: line})
@@ -81,17 +69,8 @@ def report():
                     len(todos), len(don))
         )
 
-    except Exception:
-        print(
-            '{} Pending : {} Compleated : {}'
-            .format(str(datetime.datetime.today()).split()[0],
-                    len(todos), len(don))
-        )
 
-
-# TODO: Refactor
-# delete
-def deL(no):
+def delete_todo(no):
     try:
         no = int(no) - 1
         todos = read_todos_from_db()
@@ -106,10 +85,8 @@ def deL(no):
                     f.write(i)
             f.truncate()
         print("Deleted todo #{}".format(no + 1))
-
     except Exception:
-
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no))
+        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
 
 
 def read_todos_from_db():
@@ -132,12 +109,12 @@ if __name__ == '__main__':
         help()
     else:
         try:
-            # TODO: Remove global variable
-            don = {}
-
             if (args[1] == 'del'):
-                args[1] = 'deL'
-
+                args[1] = 'delete_todo'
+            if (args[1] == 'report'):
+                args[1] = 'report_completed_todo'
+            if (args[1] == 'done'):
+                args[1] = 'complete_todo'
             if (args[1] == 'add' and len(args[2:]) == 0):
                 sys.stdout.write("Error: Missing todo string. Nothing added!")
             elif (args[1] == 'done' and len(args[2:]) == 0):
