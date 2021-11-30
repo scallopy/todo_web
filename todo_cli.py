@@ -1,64 +1,47 @@
 import sys
 import datetime
-from main import read_todos_from_db, addTodo, reportCompletedTodo, lsTodo
-
+import main as func
 
 def help():
     help_message = """Usage : -
-        $ ./todo add "todo item" # Add a new todo
-        $ ./todo ls              # Show remaining todos
-        $ ./todo del NUMBER      # Delete a todo
-        $ ./todo done NUMBER     # Compleate a todo
-        $ ./todo help            # Show usage
-        $ ./todo report          # Statistics
+        $ ./todo add "todo item"       # Add a new todo
+        $ ./todo ls                    # Show remaining todos
+        $ ./todo del NUMBER            # Delete a todo
+        $ ./todo done NUMBER           # Compleate a todo
+        $ ./todo help                  # Show usage
+        $ ./todo report                # Statistics
+        $ ./todo update NUM "new item" # Update a todo
         """
     print(help_message)
 
 
 def add(todo_item):
-    addTodo(todo_item)
+    func.addTodo(todo_item)
 
 
-def ls():
-    content = lsTodo()
+def ls_todo():
+    content = func.lsTodo()
     for item in content:
         print(item[0])
 
 def complete_todo(no):
     try:
-        todos = read_todos_from_db()
-        no = int(no) - 1
-        print(no)
-        f = open('done.txt', 'a')
-        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
-
-        f.write(st)
-        f.close()
-        print("Market todo #{} as done.".format(no+1))
-
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
+        func.completeTodo(no)
     except Exception:
-        print("Error: todo #{} does not exist. Nothing comleted.".format(no+1))
+        print("Error: todo #{} does not exist. Nothing comleted.".format(no))
 
 
 def report_completed_todo():
     try:
-        content = reportCompletedTodo()
+        content = func.reportCompletedTodo()
         print(content["cont"])
     except Exception:
         print("There are not completed todos!")
 
 
-def update(no, new_item):
+def update_todo(no, new_item):
     try:
-        todos = read_todos_from_db()
+        todos = func.read_todos_from_db()
         no = int(no) - 1
 
         with open("todo.txt", "r+") as f:
@@ -79,22 +62,7 @@ def update(no, new_item):
 
 
 def delete_todo(no):
-    try:
-        no = int(no) - 1
-        todos = read_todos_from_db()
-
-        # utility function defined in main
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
-        print("Deleted todo #{}".format(no + 1))
-    except Exception:
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
+    func.deleteTodo(no)
 
 
 # Main program
@@ -111,6 +79,10 @@ if __name__ == '__main__':
                 args[1] = 'report_completed_todo'
             if (args[1] == 'done'):
                 args[1] = 'complete_todo'
+            if (args[1] == 'update'):
+                args[1] = 'update_todo'
+            if (args[1] == 'ls'):
+                args[1] = 'ls_todo'
             if (args[1] == 'add' and len(args[2:]) == 0):
                 sys.stdout.write("Error: Missing todo string. Nothing added!")
             elif (args[1] == 'done' and len(args[2:]) == 0):

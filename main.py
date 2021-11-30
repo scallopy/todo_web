@@ -19,27 +19,24 @@ def lsTodo():
     return content
 
 
-def complete_todo(no):
-    try:
-        todos = read_todos_from_db()
-        no = int(no) - 1
-        f = open('done.txt', 'a')
-        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
+def completeTodo(no):
+    todos = read_todos_from_db()
+    no = int(no) - 1
+    f = open('done.txt', 'a')
+    st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
 
-        f.write(st)
-        f.close()
-        print("Market todo #{} as done.".format(no+1))
+    f.write(st)
+    f.close()
+    print("Market todo #{} as done.".format(no+1))
 
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
 
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
-    except Exception:
-        print("Error: todo #{} does not exist. Nothing comleted.".format(no+1))
+        for i in lines:
+            if i != todos[no]:
+                f.write(i)
+        f.truncate()
 
 
 def reportCompletedTodo():
@@ -68,12 +65,14 @@ def reportCompletedTodo():
     return content
 
 
-def delete_todo(no):
+def updateTodo(no):
+    pass
+
+
+def deleteTodo(no):
     try:
         no = int(no) - 1
         todos = read_todos_from_db()
-
-        # utility function defined in main
         with open("todo.txt", "r+") as f:
             lines = f.readlines()
             f.seek(0)

@@ -1,8 +1,6 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for
-import datetime
-
-from main import read_todos_from_db, addTodo, reportCompletedTodo, lsTodo
+import main as func
 
 app = Flask(__name__)
 
@@ -21,13 +19,13 @@ app = Flask(__name__)
 @app.route("/add", methods=["POST"])
 def add_todo():
     s = request.form.get("title")
-    addTodo(s)
+    func.addTodo(s)
     return redirect(url_for("home"))
 
 
 @app.route('/', methods=["GET"])
 def home():
-    content = lsTodo()
+    content = func.lsTodo()
     return render_template('index.html', content=content)
 
 
@@ -35,34 +33,17 @@ def home():
 @app.route("/done/<int:no>", methods=["GET", "POST"])
 def done(no):
     try:
-
-        todos = read_todos_from_db()
-        no = int(no) - 1
-        f = open('done.txt', 'a')
-        st = 'x ' + str(datetime.datetime.today()).split()[0] + ' ' + todos[no]
-
-        f.write(st)
-        f.close()
-        print("Market todo #{} as done.".format(no + 1))
-
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
-            return redirect(url_for("report"))
+        func.completeTodo(no)
+        return redirect(url_for("report"))
 
     except Exception:
-        print("Error: todo")
+        print("Error: todo #{} does not exist. Nothing comleted.".format(no))
         return redirect(url_for("report"))
 
 
 @app.route("/edit/<int:no>")
 def edit(no):
-    todos = read_todos_from_db()
+    todos = func.read_todos_from_db()
     no = int(no) - 1
     with open("todo.txt", "r") as f:
         lines = f.readlines()
@@ -76,8 +57,8 @@ def edit(no):
 
 
 @app.route("/update/<int:no>", methods=["POST"])
-def update(no):
-    todos = read_todos_from_db()
+def update_todo(no):
+    todos = func.read_todos_from_db()
     no = int(no) - 1
 
     with open("todo.txt", "r+") as f:
@@ -100,24 +81,7 @@ def update(no):
 
 @app.route("/delete/<int:no>", methods=["GET"])
 def delete(no):
-    try:
-        todos = read_todos_from_db()
-        no = int(no) - 1
-
-        # utility function defined in main
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
-            print("Deleted todo #{}".format(no+1))
-
-    except Exception:
-
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
+    func.deleteTodo(no)
     return redirect(url_for("home"))
 
 
@@ -125,7 +89,7 @@ def delete(no):
 @app.route('/report', methods=["GET"])
 def report():
     try:
-        content = reportCompletedTodo()
+        content = func.reportCompletedTodo()
         return render_template(
             'report.html', content=content)
 
