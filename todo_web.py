@@ -2,7 +2,7 @@ import sys
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
-from main import read_todos_from_db, addTodo, reportCompletedTodo
+from main import read_todos_from_db, addTodo, reportCompletedTodo, lsTodo
 
 app = Flask(__name__)
 
@@ -27,13 +27,7 @@ def add_todo():
 
 @app.route('/', methods=["GET"])
 def home():
-    todos = read_todos_from_db()
-    inx = len(todos)
-    content = []
-    for todo in reversed(todos):
-        cont = [("[{}] {}\n".format(inx, todo)), inx]
-        inx -= 1
-        content.append(cont)
+    content = lsTodo()
     return render_template('index.html', content=content)
 
 

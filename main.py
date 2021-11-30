@@ -8,13 +8,15 @@ def addTodo(todo_item):
     print("Added todo: \"{}\"".format(todo_item))
 
 
-def ls():
+def lsTodo():
     todos = read_todos_from_db()
-    idx = len(todos)
-
+    inx = len(todos)
+    content = []
     for todo in reversed(todos):
-        print("[{}] {}".format(idx, todo))
-        idx -= 1
+        cont = [("[{}] {}\n".format(inx, todo)), inx]
+        inx -= 1
+        content.append(cont)
+    return content
 
 
 def complete_todo(no):

@@ -1,6 +1,6 @@
 import sys
 import datetime
-from main import read_todos_from_db, addTodo, reportCompletedTodo
+from main import read_todos_from_db, addTodo, reportCompletedTodo, lsTodo
 
 
 def help():
@@ -20,13 +20,9 @@ def add(todo_item):
 
 
 def ls():
-    todos = read_todos_from_db()
-    idx = len(todos)
-
-    for todo in reversed(todos):
-        print("[{}] {}".format(idx, todo))
-        idx -= 1
-
+    content = lsTodo()
+    for item in content:
+        print(item[0])
 
 def complete_todo(no):
     try:
