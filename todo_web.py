@@ -2,7 +2,7 @@ import sys
 from flask import Flask, render_template, request, redirect, url_for
 import datetime
 
-from main import read_todos_from_db, addTodo
+from main import read_todos_from_db, addTodo, reportCompletedTodo
 
 app = Flask(__name__)
 
@@ -130,53 +130,15 @@ def delete(no):
 # Function to show report/statistics of todo list
 @app.route('/report', methods=["GET"])
 def report():
-    todos = read_todos_from_db()
     try:
-
-        nf = open('done.txt', 'r')
-        c = 0
-        content = []
-        completed = []
-        for line in nf:
-            c = c + 1
-            don.update({c: line})
-        cont = (
-            '{} Pending : {} Completed : {}'
-            .format(
-                str(datetime.datetime.today()).split()[0],
-                len(todos), len(don))
-        )
-        content.append(cont)
-        for value in don.values():
-            completed.append(value)
+        content = reportCompletedTodo()
         return render_template(
-            'report.html', content=content, completed=completed)
+            'report.html', content=content)
 
     except Exception:
-        print(
-            '{} Pending : {} Compleated : {}'
-            .format(
-                str(datetime.datetime.today()).split()[0], len(d), len(don))
-        )
+        content = {"cont": "There are not completed todos!"}
         return render_template(
-            'report.html', content=content, completed=completed)
-
-
-def nec():
-
-    try:
-        f = open("todo.txt", "r")
-        lines = f.readlines()
-        c = 0
-        d.clear()
-        for line in lines:
-            line.strip('\n')
-            c += 1
-            d[c] = line
-        f.close()
-
-    except Exception:
-        print("There are not todos!")
+            'report.html', content=content)
 
 
 def main(argv):
@@ -186,6 +148,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    d = {}
-    don = {}
     main(sys.argv)

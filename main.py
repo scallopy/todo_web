@@ -40,21 +40,30 @@ def complete_todo(no):
         print("Error: todo #{} does not exist. Nothing comleted.".format(no+1))
 
 
-def report_completed_todo():
+def reportCompletedTodo():
+    completed = []
     todos = read_todos_from_db()
     don = {}
+    cont = ""
     with open('done.txt', 'r') as nf:
-        c = 1
+        c = 0
         for line in nf:
-            line = line.strip('\n')
-            don.update({c: line})
             c = c + 1
+            don.update({c: line})
 
-        print(
+        cont += (
             '{} Pending : {} Compleated : {}'
             .format(str(datetime.datetime.today()).split()[0],
                     len(todos), len(don))
         )
+    for value in don.values():
+        completed.append(value)
+
+    content = {
+        "cont": cont,
+        "completed": completed
+    }
+    return content
 
 
 def delete_todo(no):

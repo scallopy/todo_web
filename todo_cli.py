@@ -1,6 +1,6 @@
 import sys
 import datetime
-from main import read_todos_from_db, addTodo
+from main import read_todos_from_db, addTodo, reportCompletedTodo
 
 
 def help():
@@ -53,20 +53,11 @@ def complete_todo(no):
 
 
 def report_completed_todo():
-    todos = read_todos_from_db()
-    don = {}
-    with open('done.txt', 'r') as nf:
-        c = 1
-        for line in nf:
-            line = line.strip('\n')
-            don.update({c: line})
-            c = c + 1
-
-        print(
-            '{} Pending : {} Compleated : {}'
-            .format(str(datetime.datetime.today()).split()[0],
-                    len(todos), len(don))
-        )
+    try:
+        content = reportCompletedTodo()
+        print(content["cont"])
+    except Exception:
+        print("There are not completed todos!")
 
 
 def update(no, new_item):

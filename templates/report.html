@@ -6,10 +6,8 @@
       <h3><a href="/">Todo list</a></h3>
 
       <h1>Completed todos:</h1>
-      {%  for line in content %}
-      <p>{{ line }}</p>
-      {% endfor %}
-      {% for item in completed %}
+      <p>{{ content["cont"] }}</p>
+      {% for item in content["completed"] %}
       <p>{{ item }}</p>
       {% endfor %}
 
