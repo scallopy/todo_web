@@ -1,4 +1,5 @@
 import tkinter as tk
+import main as func
 
 # global list for storing all the todo
 todos_list = []
@@ -29,6 +30,10 @@ def clear_todoField():
     enterTodoField.delete(0, tk.END)
 
 
+def clear_TextArea():
+    TextArea.delete('1.0', tk.END)
+
+
 # Function for inserting the contents
 # from the todo entry field to the text area
 def add_todo():
@@ -42,13 +47,14 @@ def add_todo():
         return
 
     # get and store TODO
-    content = enterTodoField.get() + "\n"
-    todos_list.append(content)
+    todo_item = enterTodoField.get()
+    func.addTodo(todo_item)
 
-    # Insert content of todo entry field to the text area
-    # Add todo one by one in below one by one
-    TextArea.insert('end -1 chars', "[ " + str(counter) + " ]" + content)
-    counter += 1
+    # upate TextArea
+    clear_TextArea()
+    content = func.lsTodo()
+    for item in content:
+        TextArea.insert(tk.END, item[0])
 
     clear_todoField()
 
@@ -119,19 +125,25 @@ if __name__ == "__main__":
     # create a text entry box
     # for typing the todo
     enterTodoField = tk.Entry(gui)
+    enterTodoField.focus()
     enterTodoField.grid(row=1, column=2, ipadx=58)
 
-    # create a Submit Button and place into the root window
     # when user press the button, the command or
     # function affiliated to that button is executed
     Submit = tk.Button(
         gui, text="Submit", fg="Black", bg="Red", command=add_todo
     )
+    gui.bind('<Return>', lambda event: add_todo())
     Submit.grid(row=2, column=2, padx=10, pady=5, sticky="e")
 
     # create a text area for the root
     TextArea = tk.Text(gui, height=6, width=25, font="lucida 13")
     TextArea.grid(row=3, column=2, padx=10, sticky=tk.W)
+
+    # Read Uncompleted Todos
+    content1 = func.lsTodo()
+    for item in content1:
+        TextArea.insert(tk.END, item[0])
 
     # create a label : Delete Todo Number
     todoNumber = tk.Label(
