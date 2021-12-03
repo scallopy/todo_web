@@ -2,17 +2,10 @@ import tkinter as tk
 import main as func
 from tkinter import messagebox, ttk
 
-# global list for storing all the todo
-todos_list = []
-
-# global variable for counting the todo
-counter = 1
-
 
 # Function for checking input error
 # when empty input is given
 def inputError():
-
     if enterTodoField.get() == "":
         messagebox.showerror("Input Error")
         return 0
@@ -26,6 +19,7 @@ def clear_todoNumberField():
 
 
 def update_fields():
+    TextArea.configure(state="normal")
     TextArea.delete('1.0', tk.END)
     content = func.lsTodo()
     for item in content:
@@ -72,7 +66,6 @@ def delete_todo():
         clear_todoNumberField()
 
         # upate TextArea
-        TextArea.configure(state="normal")
         update_fields()
 
 
@@ -81,23 +74,16 @@ def update_todo(no):
 
 
 def complete_todo():
-    # Get the todo number, wich is required to delete
     no = todoNumberField.get(1.0, tk.END)
-
-    # checking for input error when
-    # empty input in todo number field
     if no == "\n":
         messagebox.showerror("input error")
         clear_todoNumberField()
         return
     else:
         func.completeTodo(no)
-
-        # clear content of todo number field
         clear_todoNumberField()
 
-        # upate TextArea
-        TextArea.configure(state="normal")
+        # upate TextArea and Report
         update_fields()
         report_todo()
         messagebox.showinfo("showinfo", "Market todo #{} as done.".format(no))
@@ -108,11 +94,9 @@ def report_todo():
     cont = func.reportCompletedTodo()
     for key, value in cont.items():
         if not isinstance(value, list):
-            print(value)
             Report.insert(tk.END, (value + "\n\n"))
         else:
             for el in value:
-                print(el)
                 Report.insert(tk.END, (el + "\n"))
     Report.configure(state='disabled')
 
