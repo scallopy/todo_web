@@ -1,9 +1,2 @@
 x 2021-11-23 Add first todo
 x 2021-11-23 Add second todo
-x 2021-11-23 Add third todo
-x 2021-11-24 Add fifth todo
-x 2021-11-24 Updated seventh todo
-x 2021-11-25 Add second todo
-
-x 2021-11-25 Add something
-
