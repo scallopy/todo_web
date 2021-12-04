@@ -47,6 +47,12 @@ def addUpdateRow():
         messagebox.showerror("Type todo number!")
         clear_todoNumberField()
         return
+
+    elif IndexError:
+        messagebox.showerror("No todo!")
+        clear_todoNumberField()
+        return
+
     else:
         updateTodoField.grid(row=7, column=2, ipadx=58)
         updateTodoField.focus()
@@ -85,6 +91,10 @@ def delete_todo():
         messagebox.showerror("Type todo number!")
         clear_todoNumberField()
         return
+    elif IndexError:
+        messagebox.showerror("No todo!")
+        clear_todoNumberField()
+        return
     else:
         func.deleteTodo(no)
 
@@ -98,10 +108,12 @@ def delete_todo():
 def update_todo():
     no = todoNumberField.get(1.0, tk.END)
     todos = func.read_todos_from_db()
+
     if no == "\n":
         messagebox.showerror("Type todo number!")
         clear_todoNumberField()
         return
+
     else:
         no = int(no) - 1
 
@@ -127,10 +139,17 @@ def update_todo():
 
 def complete_todo():
     no = todoNumberField.get(1.0, tk.END)
+
     if no == "\n":
         messagebox.showerror("input error")
         clear_todoNumberField()
         return
+
+    elif IndexError:
+        messagebox.showerror("No todo!")
+        clear_todoNumberField()
+        return
+
     else:
         func.completeTodo(no)
         clear_todoNumberField()
@@ -156,18 +175,13 @@ def report_todo():
 # Driver code
 if __name__ == "__main__":
 
-    # create a GUI window
+    # create and set GUI window:
     gui = tk.Tk()
-
-    # set the background colour of GUI window
     gui.configure(background="light green")
-
-    # set the title of GUI window
     gui.title("TODO App")
-
-    # set the configuration of GUI window
     gui.geometry("300x500")
 
+    # create and set tabs:
     tabControl = ttk.Notebook(gui)
     s = ttk.Style()
     s.configure('TFrame', background="light green")
@@ -180,42 +194,33 @@ if __name__ == "__main__":
     tabControl.add(tab2, text="Completed TODOs")
     tabControl.pack(expand=1, fill="both")
 
-    # create a label : Enter Your Todo
+    # Drawing a tab1:
+
+    # create and display add todo box
     enterTodo = tk.Label(tab1, text="Enter Your Todo:", bg="light green")
     enterTodo.grid(row=0, column=2, padx=10, pady=(20, 5), sticky="w")
 
-    # create a text entry box
-    # for typing the todo
     enterTodoField = tk.Entry(tab1)
     enterTodoField.focus()
     enterTodoField.grid(row=1, column=2, ipadx=58)
 
-    # when user press the button, the command or
-    # function affiliated to that button is executed
+    # Submit button to add a todo
     Submit = tk.Button(
         tab1, text="Submit", fg="Black", bg="Red", command=add_todo
     )
     tab1.bind('<Return>', lambda event: add_todo())
     Submit.grid(row=2, column=2, padx=10, pady=5, sticky="e")
 
-    # create a text area for the root
+    # Create an area to display added todos
     TextArea = tk.Text(tab1, height=8, width=25, font="lucida 13")
     TextArea.grid(row=3, column=2, padx=10, sticky=tk.W)
 
-    # Read Uncompleted Todos
     content1 = func.lsTodo()
     for item in content1:
         TextArea.insert(tk.END, item[0])
     TextArea.configure(state='disabled')
 
-    completed = tk.Label(tab2, text="Completed todos")
-    completed.grid(row=1, column=2)
-
-    Report = tk.Text(tab2, height=20, width=34, font="lucida 10")
-    Report.grid(row=2, column=2, padx=10, sticky=tk.W)
-    report_todo()
-
-    # create a label : Delete Todo Number
+    # Creat Todo Number field
     todoNumber = tk.Label(
         tab1, text="Enter Todo Number - >", height=1, width=22
     )
@@ -224,38 +229,44 @@ if __name__ == "__main__":
     todoNumberField = tk.Text(tab1, height=1, width=2, font="lucida 13")
     todoNumberField.grid(row=5, column=2, padx=10, pady=5, sticky="e")
 
+    # Create Done, Update, and Delete buttons:
+    done = tk.Button(
+        tab1, text="Done", fg="Black", bg="White", command=complete_todo
+    )
+    done.grid(row=6, column=2, padx=75, pady=5, sticky="w")
+
+    updateButton = tk.Button(
+        tab1, text="Update", fg="Black", bg="Green", command=addUpdateRow
+    )
+    updateButton.grid(row=6, column=2, padx=85, pady=5, sticky="e")
+
+    delete = tk.Button(
+        tab1, text="Delete", fg="Black", bg="Red", command=delete_todo
+    )
+    delete.grid(row=6, column=2, padx=10, pady=5, sticky="e")
+
+    # Display fields to update a todo:
     updateTodoField = tk.Entry(tab1)
     updateTodo = tk.Button(
         tab1,
         text="Update Todo", fg="Black", bg="Green", command=update_todo
     )
-
     cancel = tk.Button(
         tab1,
         text="Cancel", fg="Black", command=remove_update_fields
     )
 
-    # create a Delete Button and place into the root window
-    # when user press the button, the command or
-    # function affiliated to that button is executed .
-    done = tk.Button(
-        tab1, text="Done", fg="Black", bg="White", command=complete_todo
-    )
-    updateButton = tk.Button(
-        tab1, text="Update", fg="Black", bg="Green", command=addUpdateRow
-    )
-    delete = tk.Button(
-        tab1, text="Delete", fg="Black", bg="Red", command=delete_todo
-    )
-    done.grid(row=6, column=2, padx=75, pady=5, sticky="w")
-    updateButton.grid(row=6, column=2, padx=85, pady=5, sticky="e")
-    delete.grid(row=6, column=2, padx=10, pady=5, sticky="e")
-
-    # Exit = tk.Button(tab1, text="Exit", fg="Black", bg="Red", command=exit)
-    # Exit.grid(row=10, column=2, padx=10, pady=5, sticky="e")
-
+    # Create refresh button to update code changes:
     Refresh = tk.Button(tab1, text="Refresh", command=refresh)
     Refresh.grid(row=11, column=2, padx=10, pady=10, sticky="se")
+
+    # Drawing tab2 for completed todos
+    completed = tk.Label(tab2, text="Completed todos")
+    completed.grid(row=1, column=2)
+
+    Report = tk.Text(tab2, height=20, width=34, font="lucida 10")
+    Report.grid(row=2, column=2, padx=10, sticky=tk.W)
+    report_todo()
 
     # start the GUI
     gui.mainloop()
