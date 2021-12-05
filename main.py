@@ -70,20 +70,16 @@ def updateTodo(no):
 
 
 def deleteTodo(no):
-    try:
-        no = int(no) - 1
-        todos = read_todos_from_db()
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
+    no = int(no) - 1
+    todos = read_todos_from_db()
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
 
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-            f.truncate()
-        print("Deleted todo #{}".format(no + 1))
-    except Exception:
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
+        for i in lines:
+            if i != todos[no]:
+                f.write(i)
+        f.truncate()
 
 
 def read_todos_from_db():

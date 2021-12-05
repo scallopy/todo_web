@@ -62,7 +62,13 @@ def update_todo(no, new_item):
 
 
 def delete_todo(no):
-    func.deleteTodo(no)
+    try:
+        func.deleteTodo(no)
+        print("Deleted todo #{}".format(no + 1))
+    except Exception:
+        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
+
+
 
 
 # Main program

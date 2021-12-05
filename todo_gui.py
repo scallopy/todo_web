@@ -3,6 +3,8 @@ import tkinter as tk
 import main as func
 from tkinter import messagebox, ttk
 
+import errno
+
 
 # Function for checking input error
 # when empty input is given
@@ -13,9 +15,27 @@ def inputError():
     return 1
 
 
+def inputNumberErrors(no, todos):
+    if no == "\n":
+        messagebox.showerror("Type todo number!")
+        clear_todoNumberField()
+        return
+
+    no = int(no)
+    if no not in range(1, (len(todos)+1)):
+        messagebox.showinfo("No todo!")
+        clear_todoNumberField()
+        return
+
+
 def refresh():
-    gui.destroy()
-    os.popen("python3.8 todo_gui.py")
+    try:
+        gui.destroy()
+        os.popen("python3.8 todo_gui.py")
+    except IOError as e:
+        if e.errno == errno.EPIPE:
+            messagebox.showerror("IOError!")
+            return
 
 
 # Function for clearing the contents
@@ -43,21 +63,24 @@ def remove_update_fields():
 
 def addUpdateRow():
     no = todoNumberField.get(1.0, tk.END)
-    if no == "\n":
-        messagebox.showerror("Type todo number!")
-        clear_todoNumberField()
-        return
+    todos = func.read_todos_from_db()
 
-    elif IndexError:
-        messagebox.showerror("No todo!")
-        clear_todoNumberField()
-        return
+    try:
+        no = int(no) - 1
+        if no not in range(0, (len(todos))):
+            messagebox.showinfo("No todo!")
+            clear_todoNumberField()
+            return
 
-    else:
-        updateTodoField.grid(row=7, column=2, ipadx=58)
-        updateTodoField.focus()
-        updateTodo.grid(row=8, column=2, padx=10, pady=5, sticky="e")
-        cancel.grid(row=8, column=2, padx=105, pady=5, sticky="w")
+        else:
+            updateTodoField.grid(row=7, column=2, ipadx=58)
+            updateTodoField.insert(tk.END, todos[no])
+            updateTodoField.focus()
+            updateTodo.grid(row=8, column=2, padx=10, pady=5, sticky="e")
+            cancel.grid(row=8, column=2, padx=105, pady=5, sticky="w")
+
+    except Exception:
+        inputNumberErrors(no, todos)
 
 
 # Function for inserting the contents
@@ -81,76 +104,48 @@ def add_todo():
 
 
 def delete_todo():
-
-    # Get the todo number, wich is required to delete
     no = todoNumberField.get(1.0, tk.END)
-
-    # checking for input error when
-    # empty input in todo number field
-    if no == "\n":
-        messagebox.showerror("Type todo number!")
-        clear_todoNumberField()
-        return
-    elif IndexError:
-        messagebox.showerror("No todo!")
-        clear_todoNumberField()
-        return
-    else:
+    todos = func.read_todos_from_db()
+    try:
         func.deleteTodo(no)
 
         # clear content of todo number field
         clear_todoNumberField()
-
-        # upate TextArea
         update_fields()
+    except Exception:
+        inputNumberErrors(no, todos)
 
 
 def update_todo():
     no = todoNumberField.get(1.0, tk.END)
     todos = func.read_todos_from_db()
 
-    if no == "\n":
-        messagebox.showerror("Type todo number!")
-        clear_todoNumberField()
-        return
+    no = int(no) - 1
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
 
-    else:
-        no = int(no) - 1
+        for i in lines:
+            if i != todos[no]:
+                f.write(i)
+            else:
+                new_i = updateTodoField.get()
+                f.write(new_i)
+                f.write("\n")
+                s = '"'+new_i+'"'
+                print("Updated todo: {} {} to {}".format((no+1), i, s))
+        f.truncate()
 
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-                else:
-                    new_i = updateTodoField.get()
-                    f.write(new_i)
-                    f.write("\n")
-                    s = '"'+new_i+'"'
-                    print("Updated todo: {} {} to {}".format((no+1), i, s))
-            f.truncate()
-
-        remove_update_fields()
-        clear_todoNumberField()
-        update_fields()
+    remove_update_fields()
+    clear_todoNumberField()
+    update_fields()
 
 
 def complete_todo():
     no = todoNumberField.get(1.0, tk.END)
+    todos = func.read_todos_from_db()
 
-    if no == "\n":
-        messagebox.showerror("input error")
-        clear_todoNumberField()
-        return
-
-    elif IndexError:
-        messagebox.showerror("No todo!")
-        clear_todoNumberField()
-        return
-
-    else:
+    try:
         func.completeTodo(no)
         clear_todoNumberField()
 
@@ -158,6 +153,8 @@ def complete_todo():
         update_fields()
         report_todo()
         messagebox.showinfo("showinfo", "Market todo #{} as done.".format(no))
+    except Exception:
+        inputNumberErrors(no, todos)
 
 
 def report_todo():
