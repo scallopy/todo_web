@@ -6,8 +6,7 @@ from tkinter import messagebox, ttk
 import errno
 
 
-# Function for checking input error
-# when empty input is given
+# Function for checking input error when empty input is given
 def inputError():
     if enterTodoField.get() == "":
         messagebox.showerror("Input Error")
@@ -38,8 +37,7 @@ def refresh():
             return
 
 
-# Function for clearing the contents
-# of todo number field
+# Function for clearing the contents of todo number field
 def clear_todoNumberField():
     todoNumberField.delete(0.0, tk.END)
 
@@ -98,8 +96,6 @@ def add_todo():
 
     # Check for error
     value = inputError()
-
-    # if error occure then return
     if value == 0:
         return
 
@@ -127,23 +123,8 @@ def delete_todo():
 
 def update_todo():
     no = todoNumberField.get(1.0, tk.END)
-    todos = func.read_todos_from_db()
-
-    no = int(no) - 1
-    with open("todo.txt", "r+") as f:
-        lines = f.readlines()
-        f.seek(0)
-
-        for i in lines:
-            if i != todos[no]:
-                f.write(i)
-            else:
-                new_i = updateTodoField.get()
-                f.write(new_i)
-                f.write("\n")
-                s = '"'+new_i+'"'
-                print("Updated todo: {} {} to {}".format((no+1), i, s))
-        f.truncate()
+    new_item = updateTodoField.get()
+    func.updateTodo(no, new_item)
 
     remove_update_fields()
     update_fields()

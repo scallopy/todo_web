@@ -5,7 +5,6 @@ def addTodo(todo_item):
     with open('todo.txt', 'a') as f:
         f.write(todo_item)
         f.write("\n")
-    print("Added todo: \"{}\"".format(todo_item))
 
 
 def lsTodo():
@@ -27,7 +26,6 @@ def completeTodo(no):
 
     f.write(st)
     f.close()
-    print("Market todo #{} as done.".format(no+1))
 
     with open("todo.txt", "r+") as f:
         lines = f.readlines()
@@ -65,8 +63,22 @@ def reportCompletedTodo():
     return content
 
 
-def updateTodo(no):
-    pass
+def updateTodo(no, new_item):
+    todos = read_todos_from_db()
+    no = int(no) - 1
+    with open("todo.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
+
+        for i in lines:
+            if i != todos[no]:
+                f.write(i)
+            else:
+                f.write(new_item)
+                f.write("\n")
+        f.truncate()
+
+
 
 
 def deleteTodo(no):

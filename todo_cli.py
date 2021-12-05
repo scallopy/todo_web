@@ -17,6 +17,7 @@ def help():
 
 def add(todo_item):
     func.addTodo(todo_item)
+    print("Added todo: \"{}\"".format(todo_item))
 
 
 def ls_todo():
@@ -27,6 +28,7 @@ def ls_todo():
 def complete_todo(no):
     try:
         func.completeTodo(no)
+        print("Market todo #{} as done.".format(no))
     except Exception:
         print("Error: todo #{} does not exist. Nothing comleted.".format(no))
 
@@ -40,23 +42,12 @@ def report_completed_todo():
 
 
 def update_todo(no, new_item):
+    todos = func.read_todos_from_db()
+
     try:
-        todos = func.read_todos_from_db()
-        no = int(no) - 1
-
-        with open("todo.txt", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-
-            for i in lines:
-                if i != todos[no]:
-                    f.write(i)
-                else:
-                    f.write(new_item)
-                    f.write("\n")
-                    s = '"'+new_item+'"'
-                    print("Updated todo: {} {} to {}".format((no+1), i, s))
-            f.truncate()
+        func.updateTodo(no, new_item)
+        s = '"' + new_item + '"'
+        print("Updated todo with number {} to {}".format(no, s))
     except Exception:
         print("Error: todo #{} does not exist. Nothing updated.".format(no+1))
 
@@ -64,11 +55,9 @@ def update_todo(no, new_item):
 def delete_todo(no):
     try:
         func.deleteTodo(no)
-        print("Deleted todo #{}".format(no + 1))
+        print("Deleted todo #{}".format(no))
     except Exception:
-        print("Error: todo #{} does not exist. Nothing deleted.".format(no+1))
-
-
+        print("Error: todo #{} does not exist. Nothing deleted.".format(no))
 
 
 # Main program
