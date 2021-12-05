@@ -1,4 +1,4 @@
-# todo_web
+# Todo Apps
 
 ## Getting Started
 
@@ -22,23 +22,21 @@
 
 5. Install the requirements: `(env) ...$ python3.8 -m pip install -U -r requirements.txt`
 
-6. Run the server: `python main.py`
+## To run `Web` version
 
-# todo_cli
+Run the server: `python todo_web.py`
 
-## Give permition to the todo.sh
+## Working with `CLI` vertion:
 
-$ chmod +x todo.sh
+1. Give permition to the todo.sh: `$ chmod +x todo.sh`
 
-## Working with todo CLI app:
+2. How to use app: `$ ./todo help`
 
-$ ./todo help
+3. If you haven't linked todo.sh:
 
-## If you haven't linked todo.sh:
+- for Linux: `$ ln -s todo.sh todo`
 
-$ ln -s todo.sh todo
-
-## for windows:
+- for Windows:
 
 **todo.bat** file:
 
@@ -50,3 +48,10 @@ python3 todo.py %1 %2
 **Create a symbolic link to the executable file:**
 
 `mklink todo todo.bat`
+
+## To run `GUI` version:
+
+`python3.8 todo_gui.py`
+
+**Note: The `Refresh` button doesn't work very well at this point - IOError
+sometimes appears, but I use it when I make changes.**
