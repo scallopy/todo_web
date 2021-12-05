@@ -59,6 +59,11 @@ def remove_update_fields():
     updateTodoField.grid_remove()
     updateTodo.grid_remove()
     cancel.grid_remove()
+    clear_todoNumberField()
+    Submit['state'] = 'normal'
+    done['state'] = 'normal'
+    delete['state'] = 'normal'
+    enterTodoField.configure(state='normal')
 
 
 def addUpdateRow():
@@ -78,6 +83,10 @@ def addUpdateRow():
             updateTodoField.focus()
             updateTodo.grid(row=8, column=2, padx=10, pady=5, sticky="e")
             cancel.grid(row=8, column=2, padx=105, pady=5, sticky="w")
+            Submit['state'] = 'disabled'
+            done['state'] = 'disabled'
+            delete['state'] = 'disabled'
+            enterTodoField.configure(state='disabled')
 
     except Exception:
         inputNumberErrors(no, todos)
@@ -137,7 +146,6 @@ def update_todo():
         f.truncate()
 
     remove_update_fields()
-    clear_todoNumberField()
     update_fields()
 
 
